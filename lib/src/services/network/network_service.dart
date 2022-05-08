@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart' as dio;
-import 'package:rock_and_morty/src/providers/constants.dart';
+import 'package:rick_and_morty/src/providers/constants.dart';
 
 ///
 /// Servicio de Network

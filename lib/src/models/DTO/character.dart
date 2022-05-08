@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:rock_and_morty/src/models/DTO/location.dart';
+import 'package:rick_and_morty/src/models/DTO/location.dart';
 
 AllCharacters allCharactersFromJson(String str) =>
     AllCharacters.fromJson(json.decode(str));

@@ -1,4 +1,4 @@
-# rock_and_morty
+# rick_and_morty
 
 A new Flutter project.
 

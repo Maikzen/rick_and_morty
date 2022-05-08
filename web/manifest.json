@@ -1,6 +1,6 @@
 {
-    "name": "rock_and_morty",
-    "short_name": "rock_and_morty",
+    "name": "rick_and_morty",
+    "short_name": "rick_and_morty",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

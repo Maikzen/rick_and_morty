@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rock_and_morty/src/theme/theme.dart';
+import 'package:rick_and_morty/src/theme/theme.dart';
 
 import 'src/screens/home/home_screen.dart';
 

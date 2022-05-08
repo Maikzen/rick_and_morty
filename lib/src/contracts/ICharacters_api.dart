@@ -1,4 +1,4 @@
-import 'package:rock_and_morty/src/models/filter.dart';
+import 'package:rick_and_morty/src/models/filter.dart';
 
 import '../models/DTO/character.dart';
 

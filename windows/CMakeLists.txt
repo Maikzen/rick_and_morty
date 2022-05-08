@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
-project(rock_and_morty LANGUAGES CXX)
+project(rick_and_morty LANGUAGES CXX)
 
-set(BINARY_NAME "rock_and_morty")
+set(BINARY_NAME "rick_and_morty")
 
 cmake_policy(SET CMP0063 NEW)
 

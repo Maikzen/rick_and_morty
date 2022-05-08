@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:rock_and_morty/src/models/DTO/character.dart';
-import 'package:rock_and_morty/src/screens/home/widgets/favourite_widget.dart';
+import 'package:rick_and_morty/src/models/DTO/character.dart';
+import 'package:rick_and_morty/src/screens/home/widgets/favourite_widget.dart';
 
 class CardCharacter extends StatelessWidget {
   const CardCharacter({Key? key, required this.character}) : super(key: key);

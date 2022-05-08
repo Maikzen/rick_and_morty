@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:rock_and_morty/src/bloc/home/home_bloc.dart';
-import 'package:rock_and_morty/src/providers/colors.dart';
-import 'package:rock_and_morty/src/providers/constants.dart';
-import 'package:rock_and_morty/src/screens/home/widgets/card_character.dart';
-import 'package:rock_and_morty/src/screens/home/widgets/favourite_widget.dart';
-import 'package:rock_and_morty/src/services/characters/characters_http_service.dart';
+import 'package:rick_and_morty/src/bloc/home/home_bloc.dart';
+import 'package:rick_and_morty/src/providers/colors.dart';
+import 'package:rick_and_morty/src/providers/constants.dart';
+import 'package:rick_and_morty/src/screens/home/widgets/card_character.dart';
+import 'package:rick_and_morty/src/screens/home/widgets/favourite_widget.dart';
+import 'package:rick_and_morty/src/services/characters/characters_http_service.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({Key? key}) : super(key: key);

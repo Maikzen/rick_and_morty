@@ -1,9 +1,9 @@
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
-import 'package:rock_and_morty/src/contracts/ICharacters_api.dart';
-import 'package:rock_and_morty/src/models/DTO/character.dart';
-import 'package:rock_and_morty/src/models/filter.dart';
+import 'package:rick_and_morty/src/contracts/ICharacters_api.dart';
+import 'package:rick_and_morty/src/models/DTO/character.dart';
+import 'package:rick_and_morty/src/models/filter.dart';
 
 class HomeBloc extends ChangeNotifier {
   HomeBloc({required this.charactersHttpService}) {

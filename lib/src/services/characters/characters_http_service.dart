@@ -1,8 +1,8 @@
-import 'package:rock_and_morty/src/contracts/ICharacters_api.dart';
-import 'package:rock_and_morty/src/models/DTO/character.dart';
-import 'package:rock_and_morty/src/models/filter.dart';
-import 'package:rock_and_morty/src/providers/constants.dart';
-import 'package:rock_and_morty/src/services/base_http_service.dart';
+import 'package:rick_and_morty/src/contracts/ICharacters_api.dart';
+import 'package:rick_and_morty/src/models/DTO/character.dart';
+import 'package:rick_and_morty/src/models/filter.dart';
+import 'package:rick_and_morty/src/providers/constants.dart';
+import 'package:rick_and_morty/src/services/base_http_service.dart';
 
 class CharactersHttpService extends BaseHttpService implements ICharactersApi {
   CharactersHttpService() : super(Constants.charactersPath);
