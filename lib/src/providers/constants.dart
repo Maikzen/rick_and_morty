@@ -8,5 +8,6 @@ class Constants {
   // Images
   static const String imgLogo = "assets/img/Rick-And-Morty-Logo.png";
   static const String imgBackground = "assets/img/background.PNG";
+  static const String imgCharacterBackground = "assets/img/character_background.PNG";
   static const String imgLoading = "assets/img/loading.gif";
 }
