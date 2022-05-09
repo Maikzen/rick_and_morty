@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:rick_and_morty/src/bloc/home/home_bloc.dart';
 import 'package:rick_and_morty/src/models/DTO/character.dart';
 import 'package:rick_and_morty/src/screens/character/character_screen.dart';
+import 'package:rick_and_morty/src/screens/home/home_screen.dart';
 import 'package:rick_and_morty/src/screens/home/widgets/favourite_widget.dart';
 
 class CardCharacter extends StatelessWidget {
@@ -10,6 +12,7 @@ class CardCharacter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final HomeBloc homeBloc = HomeApp.of(context)!.homeBloc;
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -36,20 +39,32 @@ class CardCharacter extends StatelessWidget {
               children: [
                 Expanded(
                   flex: 4,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(15),
-                        bottomLeft: Radius.circular(15),
+                  child: Hero(
+                    tag: 'img' + character.id.toString(),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(15),
+                          bottomLeft: Radius.circular(15),
+                        ),
+                        image: DecorationImage(
+                            image: NetworkImage(character.image!),
+                            fit: BoxFit.cover),
                       ),
-                      image: DecorationImage(
-                          image: NetworkImage(character.image!),
-                          fit: BoxFit.cover),
-                    ),
-                    child: const Align(
-                      alignment: Alignment(1, 0.9),
-                      child: FavouriteWidget(
-                        color: Colors.white,
+                      child: Align(
+                        alignment: const Alignment(1, 0.9),
+                        child: AnimatedBuilder(
+                            animation: homeBloc,
+                            builder: (context, _) {
+                              return FavouriteWidget(
+                                selected:
+                                    homeBloc.favourites.contains(character.id),
+                                color: Colors.white,
+                                onTap: () {
+                                  homeBloc.favourite(character);
+                                },
+                              );
+                            }),
                       ),
                     ),
                   ),

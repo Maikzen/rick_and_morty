@@ -6,25 +6,38 @@ import 'package:rick_and_morty/src/screens/home/widgets/card_character.dart';
 import 'package:rick_and_morty/src/screens/home/widgets/favourite_widget.dart';
 import 'package:rick_and_morty/src/services/characters/characters_http_service.dart';
 
-class HomeScreen extends StatelessWidget {
-  HomeScreen({Key? key}) : super(key: key);
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
-  final HomeBloc homeBloc =
-      HomeBloc(charactersHttpService: CharactersHttpService());
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late HomeBloc homeBloc;
+
+  @override
+  void initState() {
+    homeBloc = HomeBloc(charactersHttpService: CharactersHttpService());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-          body: CustomScrollView(
-        slivers: <Widget>[
-          _buildAppBar(context),
-          _buildFavourites(context),
-          _buildListContent(),
-          _buildPagination(),
-          _buildBottomContent(),
-        ],
-      )),
+      child: HomeApp(
+        homeBloc: homeBloc,
+        child: Scaffold(
+            body: CustomScrollView(
+          slivers: <Widget>[
+            _buildAppBar(context),
+            _buildFavourites(context),
+            _buildListContent(),
+            _buildPagination(),
+            _buildBottomContent(),
+          ],
+        )),
+      ),
     );
   }
 
@@ -117,7 +130,16 @@ class HomeScreen extends StatelessWidget {
       child: Row(children: [
         Text('Mostrar favoritos:',
             style: Theme.of(context).textTheme.titleMedium),
-        const FavouriteWidget(),
+        AnimatedBuilder(
+            animation: homeBloc,
+            builder: (context, _) {
+              return FavouriteWidget(
+                selected: homeBloc.showFavourites,
+                onTap: () {
+                  homeBloc.changeShowFavourites();
+                },
+              );
+            }),
       ]),
     ));
   }
@@ -212,4 +234,18 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+class HomeApp extends InheritedWidget {
+  final Widget child;
+  final HomeBloc homeBloc;
+
+  const HomeApp({Key? key, required this.child, required this.homeBloc})
+      : super(key: key, child: child);
+
+  static HomeApp? of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<HomeApp>();
+
+  @override
+  bool updateShouldNotify(covariant InheritedWidget oldWidget) => true;
 }

@@ -34,16 +34,21 @@ class _CharacterScreenState extends State<CharacterScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+          extendBodyBehindAppBar: true,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+          ),
           body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildHeader(context),
-            _buildContent(context),
-            _buildBottom(),
-          ],
-        ),
-      )),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _buildHeader(context),
+                _buildContent(context),
+                _buildBottom(),
+              ],
+            ),
+          )),
     );
   }
 
@@ -70,16 +75,19 @@ class _CharacterScreenState extends State<CharacterScreen> {
               Expanded(
                   flex: 4,
                   child: ClipOval(
-                    child: Container(
-                      height: size.height * 0.2,
-                      width: size.height * 0.2,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white, width: 5),
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(100)),
-                        image: DecorationImage(
-                          image: NetworkImage(widget.character.image!),
-                          fit: BoxFit.cover,
+                    child: Hero(
+                      tag: 'img' + widget.character.id.toString(),
+                      child: Container(
+                        height: size.height * 0.2,
+                        width: size.height * 0.2,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.white, width: 5),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(100)),
+                          image: DecorationImage(
+                            image: NetworkImage(widget.character.image!),
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     ),
@@ -151,6 +159,8 @@ class _CharacterScreenState extends State<CharacterScreen> {
           _buildEpisodes(context),
           SizedBox(height: _paddingH),
           _buildInterestingCharacters(context),
+          SizedBox(height: _paddingH),
+          _buildButtonShare()
         ],
       ),
     );
@@ -177,15 +187,18 @@ class _CharacterScreenState extends State<CharacterScreen> {
                           moreInfo: e.dateFormated()))
                       .toList());
             }),
-        Center(
-          child: TextButton(
-              child: const Text(
-                'Ver más',
-                style: TextStyle(
-                    color: ColorsApp.colorPrimary, fontWeight: FontWeight.bold),
-              ),
-              onPressed: characterBloc.showMore),
-        )
+        widget.character.episode!.length > 4
+            ? Center(
+                child: TextButton(
+                    child: const Text(
+                      'Ver más',
+                      style: TextStyle(
+                          color: ColorsApp.colorSecundary,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    onPressed: characterBloc.showMore),
+              )
+            : const SizedBox.shrink()
       ],
     );
   }
@@ -302,6 +315,31 @@ class _CharacterScreenState extends State<CharacterScreen> {
           scale: 1,
           alignment: Alignment(0.05, 0.7),
           colorFilter: ColorFilter.mode(Colors.black54, BlendMode.multiply),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildButtonShare() {
+    return Center(
+      child: ElevatedButton(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            'Compartir personaje',
+            style: Theme.of(context)
+                .textTheme
+                .titleLarge!
+                .copyWith(color: Colors.white),
+          ),
+        ),
+        onPressed: () {},
+        style: ButtonStyle(
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+          )),
+          backgroundColor: MaterialStateProperty.all(ColorsApp.colorSecundary),
         ),
       ),
     );

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:rick_and_morty/src/contracts/ICharacters_api.dart';
 import 'package:rick_and_morty/src/models/DTO/character.dart';
 import 'package:rick_and_morty/src/models/filter.dart';

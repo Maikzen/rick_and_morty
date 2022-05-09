@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Rick and Morty',
       theme: rickAndMortyTheme,
-      home: HomeScreen(),
+      home: const HomeScreen(),
     );
   }
 }

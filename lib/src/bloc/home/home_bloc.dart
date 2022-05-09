@@ -15,9 +15,11 @@ class HomeBloc extends ChangeNotifier {
   AllCharacters? allCharacters;
   List<Character>? characters;
   bool loading = true;
+  bool showFavourites = false;
   String? lastSearch;
   int currentPage = 1;
   late int totalPages;
+  List<int> favourites = [];
 
   void _loadData() async {
     showLoading(true);
@@ -34,9 +36,11 @@ class HomeBloc extends ChangeNotifier {
   void searchCharacter() async {
     showLoading(true);
     try {
+      currentPage = 1;
       allCharacters = await charactersHttpService
-          .getCharactersFilter(Filter(name: lastSearch));
+          .getCharactersFilter(Filter(name: lastSearch, page: currentPage));
       characters = allCharacters!.results!;
+      totalPages = allCharacters!.info!.pages!;
     } catch (e) {
       log(e.toString());
     }
@@ -49,7 +53,7 @@ class HomeBloc extends ChangeNotifier {
       try {
         currentPage++;
         allCharacters = await charactersHttpService
-            .getCharactersFilter(Filter(page: currentPage));
+            .getCharactersFilter(Filter(name: lastSearch, page: currentPage));
         characters = allCharacters!.results!;
       } catch (e) {
         log(e.toString());
@@ -64,13 +68,36 @@ class HomeBloc extends ChangeNotifier {
       try {
         currentPage--;
         allCharacters = await charactersHttpService
-            .getCharactersFilter(Filter(page: currentPage));
+            .getCharactersFilter(Filter(name: lastSearch, page: currentPage));
         characters = allCharacters!.results!;
       } catch (e) {
         log(e.toString());
       }
       showLoading(false);
     }
+  }
+
+  void favourite(Character character) {
+    if (favourites.contains(character.id)) {
+      favourites.remove(character.id);
+    } else {
+      favourites.add(character.id!);
+    }
+    notifyListeners();
+  }
+
+  void changeShowFavourites() {
+    showFavourites = !showFavourites;
+    if (showFavourites) {
+      characters!.clear();
+      characters!.addAll(allCharacters!.results!
+          .where((e) => favourites.contains(e.id))
+          .toList());
+    } else {
+      characters!.clear();
+      characters = allCharacters!.results;
+    }
+    notifyListeners();
   }
 
   void showLoading(bool ld) {
