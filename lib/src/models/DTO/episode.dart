@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:intl/intl.dart';
 
 Episode episodeFromJson(String str) => Episode.fromJson(json.decode(str));
 
@@ -42,4 +43,8 @@ class Episode {
         "url": url,
         "created": created?.toIso8601String(),
       };
+
+  String dateFormated() {
+    return DateFormat('yMMMMd').format(created!);
+  }
 }

@@ -147,7 +147,7 @@ class HomeScreen extends StatelessWidget {
         titlePadding: EdgeInsets.zero,
         background: _buildBackgroundAppbar(context),
         title: Container(
-          color: ColorsApp.colorBackground,
+          color: ColorsApp.colorPrimary,
           height: kToolbarHeight + 20,
           child: Row(children: [
             Expanded(

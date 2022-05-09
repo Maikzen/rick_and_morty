@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:rick_and_morty/src/contracts/ICharacters_api.dart';
 import 'package:rick_and_morty/src/models/DTO/character.dart';
 import 'package:rick_and_morty/src/models/filter.dart';
@@ -27,8 +29,19 @@ class CharactersHttpService extends BaseHttpService implements ICharactersApi {
   }
 
   @override
-  Future<List<Character>> getMultipleCharacters(List<int> ids) {
-    // TODO: implement getMultipleCharacters
-    throw UnimplementedError();
+  Future<List<Character>> getMultipleCharacters(List<int> ids) async {
+    String param = ids.toString().replaceAll(' ', '');
+    param = param.replaceAll('[', '');
+    param = param.replaceAll(']', '');
+    final path = Constants.characterByIds.replaceAll('{ids}', param);
+    final response = await get(baseUrl + path);
+    List<Character> characters = [];
+    if (response.isNotEmpty) {
+      // characters.addAll(response.map((i) => Character.fromJson(i)).toList());
+      for (var c in response) {
+        characters.add(Character.fromJson(c));
+      }
+    }
+    return characters;
   }
 }

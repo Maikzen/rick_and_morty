@@ -4,5 +4,5 @@ class ColorsApp {
   ColorsApp._();
 
   /// Colors
-  static const Color colorBackground = Color.fromRGBO(8, 31, 50, 1.0);
+  static const Color colorPrimary = Color.fromRGBO(8, 31, 50, 1.0);
 }

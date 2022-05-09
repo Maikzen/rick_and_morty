@@ -1,5 +1,4 @@
-import 'package:rick_and_morty/src/models/filter.dart';
-
+import '../models/filter.dart';
 import '../models/DTO/character.dart';
 
 abstract class ICharactersApi {
