@@ -362,9 +362,12 @@ class _HomeScreenState extends State<HomeScreen> {
     searchCharacters();
   }
 
-  searchCharacters() async {
+  searchCharacters({bool resetPagination = true}) async {
     homeBloc.showLoading(true);
 
+    if (resetPagination) {
+      homeBloc.filter.page = 1;
+    }
     homeBloc.allCharacters =
         await homeBloc.getCharacters(filter: homeBloc.filter);
     homeBloc.characters = homeBloc.allCharacters!.results!;
@@ -374,12 +377,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void nextPage() async {
     homeBloc.filter.page = homeBloc.filter.page! + 1;
-    searchCharacters();
+    searchCharacters(resetPagination: false);
   }
 
   void prevPage() async {
     homeBloc.filter.page = homeBloc.filter.page! - 1;
-    searchCharacters();
+    searchCharacters(resetPagination: false);
   }
 
   void clearFields() {

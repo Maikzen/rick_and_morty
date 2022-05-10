@@ -134,7 +134,12 @@ class CardCharacter extends StatelessWidget {
                 ),
               ),
             ),
-            Expanded(child: Text(character.getInfo())),
+            Expanded(
+                child: Text(
+              character.getInfo(),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            )),
           ],
         ),
         Text(

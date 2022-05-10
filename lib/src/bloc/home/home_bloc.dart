@@ -36,7 +36,6 @@ class HomeBloc extends ChangeNotifier {
       if (filter == null) {
         return await charactersHttpService.getAllCharacters();
       } else {
-        filter.page = 1;
         return await charactersHttpService.getCharactersFilter(filter);
       }
     } catch (e) {
