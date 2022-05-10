@@ -130,8 +130,8 @@ class _CharacterScreenState extends State<CharacterScreen> {
                 _favWidth / 2 +
                 _paddingFav,
             left: size.width / 2 - _favWidth / 2,
-            child: const FavouriteWidget(
-              selected: true,
+            child: FavouriteWidget(
+              selected: widget.character.fav == true,
               color: Colors.white,
             ),
           ),

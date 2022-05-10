@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:rick_and_morty/src/contracts/ICharacters_api.dart';
 import 'package:rick_and_morty/src/models/DTO/character.dart';
@@ -7,81 +5,50 @@ import 'package:rick_and_morty/src/models/filter.dart';
 
 class HomeBloc extends ChangeNotifier {
   HomeBloc({required this.charactersHttpService}) {
-    _loadData();
+    _init();
   }
 
   final ICharactersApi charactersHttpService;
+
+  TextEditingController searchTextController = TextEditingController();
 
   AllCharacters? allCharacters;
   List<Character>? characters;
   bool loading = true;
   bool showFavourites = false;
-  String? lastSearch;
-  int currentPage = 1;
-  late int totalPages;
-  List<int> favourites = [];
+  Filter filter = Filter(page: 1);
+  bool showFilters = false;
+  String? genderValue;
 
-  void _loadData() async {
+  void _init() async {
+    _loadCharacters();
+  }
+
+  Future<void> _loadCharacters() async {
     showLoading(true);
-    try {
-      allCharacters = await charactersHttpService.getAllCharacters();
-      characters = allCharacters!.results!;
-      totalPages = allCharacters!.info!.pages!;
-    } catch (e) {
-      log(e.toString());
-    }
+    allCharacters = await getCharacters();
+    characters = allCharacters!.results!;
     showLoading(false);
   }
 
-  void searchCharacter() async {
-    showLoading(true);
+  Future<AllCharacters> getCharacters({Filter? filter}) async {
     try {
-      currentPage = 1;
-      allCharacters = await charactersHttpService
-          .getCharactersFilter(Filter(name: lastSearch, page: currentPage));
-      characters = allCharacters!.results!;
-      totalPages = allCharacters!.info!.pages!;
+      if (filter == null) {
+        return await charactersHttpService.getAllCharacters();
+      } else {
+        filter.page = 1;
+        return await charactersHttpService.getCharactersFilter(filter);
+      }
     } catch (e) {
-      log(e.toString());
-    }
-    showLoading(false);
-  }
-
-  void nextPage() async {
-    if (currentPage < totalPages) {
-      showLoading(true);
-      try {
-        currentPage++;
-        allCharacters = await charactersHttpService
-            .getCharactersFilter(Filter(name: lastSearch, page: currentPage));
-        characters = allCharacters!.results!;
-      } catch (e) {
-        log(e.toString());
-      }
-      showLoading(false);
-    }
-  }
-
-  void prevPage() async {
-    if (currentPage >= 1) {
-      showLoading(true);
-      try {
-        currentPage--;
-        allCharacters = await charactersHttpService
-            .getCharactersFilter(Filter(name: lastSearch, page: currentPage));
-        characters = allCharacters!.results!;
-      } catch (e) {
-        log(e.toString());
-      }
-      showLoading(false);
+      return AllCharacters.empty();
     }
   }
 
   void favourite(Character character) {
-    if (favourites.contains(character.id)) {
-      favourites.remove(character.id);
+    if (character.fav == true) {
+      characters![characters!.indexOf(character)].fav = false;
     } else {
-      favourites.add(character.id!);
+      characters![characters!.indexOf(character)].fav = true;
     }
     notifyListeners();
   }
@@ -89,9 +56,7 @@ class HomeBloc extends ChangeNotifier {
   void changeShowFavourites() {
     showFavourites = !showFavourites;
     if (showFavourites) {
-      characters = allCharacters!.results!
-          .where((e) => favourites.contains(e.id))
-          .toList();
+      characters = characters!.where((e) => e.fav == true).toList();
     } else {
       characters = allCharacters!.results!;
     }
@@ -100,6 +65,11 @@ class HomeBloc extends ChangeNotifier {
 
   void showLoading(bool ld) {
     loading = ld;
+    notifyListeners();
+  }
+
+  void toggleMenu() {
+    showFilters = !showFilters;
     notifyListeners();
   }
 }

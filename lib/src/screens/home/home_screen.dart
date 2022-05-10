@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:rick_and_morty/src/bloc/home/home_bloc.dart';
+import 'package:rick_and_morty/src/models/DTO/character.dart';
 import 'package:rick_and_morty/src/providers/colors.dart';
 import 'package:rick_and_morty/src/providers/constants.dart';
 import 'package:rick_and_morty/src/screens/home/widgets/card_character.dart';
 import 'package:rick_and_morty/src/screens/home/widgets/favourite_widget.dart';
 import 'package:rick_and_morty/src/services/characters/characters_http_service.dart';
+
+import '../../models/filter.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -31,6 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
             body: CustomScrollView(
           slivers: <Widget>[
             _buildAppBar(context),
+            _buildFilters(context),
             _buildFavourites(context),
             _buildListContent(),
             _buildPagination(),
@@ -48,16 +52,20 @@ class _HomeScreenState extends State<HomeScreen> {
           if (homeBloc.loading) {
             return _buildLoading(context);
           } else if (homeBloc.characters != null) {
-            return SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
-                  return CardCharacter(
-                    character: homeBloc.characters![index],
-                  );
-                },
-                childCount: homeBloc.characters!.length,
-              ),
-            );
+            if (homeBloc.characters!.isNotEmpty) {
+              return SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (BuildContext context, int index) {
+                    return CardCharacter(
+                      character: homeBloc.characters![index],
+                    );
+                  },
+                  childCount: homeBloc.characters!.length,
+                ),
+              );
+            } else {
+              return _buildEmpty(context);
+            }
           } else {
             return _buildError(context);
           }
@@ -75,22 +83,23 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Row(
                 children: [
                   Expanded(
-                      child: homeBloc.currentPage > 1
+                      child: homeBloc.filter.page! > 1
                           ? TextButton(
-                              onPressed: homeBloc.prevPage,
+                              onPressed: prevPage,
                               child: const Text('Anterior'))
                           : const SizedBox.shrink()),
                   Expanded(
                       child: Text(
-                    homeBloc.currentPage.toString() +
+                    homeBloc.filter.page.toString() +
                         '/' +
-                        homeBloc.totalPages.toString(),
+                        homeBloc.allCharacters!.info!.pages!.toInt().toString(),
                     textAlign: TextAlign.center,
                   )),
                   Expanded(
-                      child: homeBloc.currentPage < homeBloc.totalPages
+                      child: homeBloc.filter.page! <
+                              homeBloc.allCharacters!.info!.pages!.toInt()
                           ? TextButton(
-                              onPressed: homeBloc.nextPage,
+                              onPressed: nextPage,
                               child: const Text('Siguiente'))
                           : const SizedBox.shrink()),
                 ],
@@ -121,6 +130,109 @@ class _HomeScreenState extends State<HomeScreen> {
       height: MediaQuery.of(context).size.height * 0.5,
       child: const Align(alignment: Alignment.topCenter, child: Text('Error')),
     ));
+  }
+
+  Widget _buildEmpty(BuildContext context) {
+    return SliverToBoxAdapter(
+        child: SizedBox(
+      height: MediaQuery.of(context).size.height * 0.5,
+      child: const Align(alignment: Alignment.topCenter, child: Text('Empty')),
+    ));
+  }
+
+  Widget _buildFilters(BuildContext context) {
+    return AnimatedBuilder(
+        animation: homeBloc,
+        builder: (context, _) {
+          return SliverToBoxAdapter(
+              child: homeBloc.showFilters
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15, horizontal: 20),
+                      child: Column(
+                        children: [
+                          Text('Filtros:',
+                              style: Theme.of(context).textTheme.titleMedium),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text('Status:'),
+                                    DropdownButton<String>(
+                                      hint: const Text('Any'),
+                                      value: homeBloc.filter.status,
+                                      isExpanded: true,
+                                      elevation: 16,
+                                      style: const TextStyle(
+                                          color: ColorsApp.colorSecundary),
+                                      underline: Container(
+                                        height: 2,
+                                        color: ColorsApp.colorSecundary,
+                                      ),
+                                      onChanged: onChangeStatus,
+                                      items: Status.values
+                                          .map<DropdownMenuItem<String>>(
+                                              (Status status) {
+                                        return DropdownMenuItem<String>(
+                                          value: status.name,
+                                          child: Text(status.name),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 20,
+                              ),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text('Gender:'),
+                                    DropdownButton<String>(
+                                      hint: const Text('Any'),
+                                      isExpanded: true,
+                                      value: homeBloc.filter.gender,
+                                      elevation: 16,
+                                      style: const TextStyle(
+                                          color: ColorsApp.colorSecundary),
+                                      underline: Container(
+                                        height: 2,
+                                        color: ColorsApp.colorSecundary,
+                                      ),
+                                      onChanged: onChangeGender,
+                                      items: Gender.values
+                                          .map<DropdownMenuItem<String>>(
+                                              (Gender gender) {
+                                        return DropdownMenuItem<String>(
+                                          value: gender.name,
+                                          child: Text(gender.name),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          TextButton(
+                              onPressed: clearFields,
+                              child: const Text(
+                                'Clear',
+                                style:
+                                    TextStyle(color: ColorsApp.colorSecundary),
+                              ))
+                        ],
+                      ),
+                    )
+                  : const SizedBox.shrink());
+        });
   }
 
   Widget _buildFavourites(BuildContext context) {
@@ -175,12 +287,16 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(
               child: _buildTextField(),
             ),
-            IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.menu,
-                  color: Colors.white,
-                ))
+            AnimatedBuilder(
+                animation: homeBloc,
+                builder: (context, _) {
+                  return IconButton(
+                      onPressed: homeBloc.toggleMenu,
+                      icon: Icon(
+                        homeBloc.showFilters ? Icons.close : Icons.menu,
+                        color: Colors.white,
+                      ));
+                })
           ]),
         ),
       ),
@@ -209,6 +325,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextField(
+        controller: homeBloc.searchTextController,
         decoration: const InputDecoration(
           focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(color: Colors.white, width: 2.0),
@@ -226,22 +343,56 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         style: const TextStyle(color: Colors.white),
         onChanged: (text) {
-          if (text.length >= 3 && homeBloc.lastSearch != text) {
-            homeBloc.lastSearch = text;
-            homeBloc.searchCharacter();
+          if (text.length >= 3 && homeBloc.filter.name != text) {
+            homeBloc.filter.name = text;
+            searchCharacters();
           }
         },
       ),
     );
   }
+
+  onChangeStatus(String? newValue) {
+    homeBloc.filter.status = newValue!;
+    searchCharacters();
+  }
+
+  onChangeGender(String? newValue) {
+    homeBloc.filter.gender = newValue!;
+    searchCharacters();
+  }
+
+  searchCharacters() async {
+    homeBloc.showLoading(true);
+
+    homeBloc.allCharacters =
+        await homeBloc.getCharacters(filter: homeBloc.filter);
+    homeBloc.characters = homeBloc.allCharacters!.results!;
+
+    homeBloc.showLoading(false);
+  }
+
+  void nextPage() async {
+    homeBloc.filter.page = homeBloc.filter.page! + 1;
+    searchCharacters();
+  }
+
+  void prevPage() async {
+    homeBloc.filter.page = homeBloc.filter.page! - 1;
+    searchCharacters();
+  }
+
+  void clearFields() {
+    homeBloc.filter = Filter(name: homeBloc.searchTextController.text);
+    searchCharacters();
+  }
 }
 
 class HomeApp extends InheritedWidget {
-  final Widget child;
   final HomeBloc homeBloc;
 
-  const HomeApp({Key? key, required this.child, required this.homeBloc})
-      : super(key: key, child: child);
+  HomeApp({Key? key, Widget? child, required this.homeBloc})
+      : super(key: key, child: child!);
 
   static HomeApp? of(BuildContext context) =>
       context.dependOnInheritedWidgetOfExactType<HomeApp>();

@@ -26,6 +26,11 @@ class AllCharacters {
         "info": info?.toJson(),
         "results": List<dynamic>.from(results!.map((x) => x.toJson())),
       };
+
+  static AllCharacters empty() {
+    return AllCharacters(
+        info: Info(count: 0, next: null, pages: 0, prev: null), results: []);
+  }
 }
 
 class Info {
@@ -77,6 +82,7 @@ class Character {
     this.episode,
     this.url,
     this.created,
+    this.fav,
   });
 
   int? id;
@@ -91,6 +97,7 @@ class Character {
   List<String>? episode;
   String? url;
   DateTime? created;
+  bool? fav;
 
   factory Character.fromJson(Map<String, dynamic> json) => Character(
         id: json["id"],
@@ -104,6 +111,7 @@ class Character {
         image: json["image"],
         episode: List<String>.from(json["episode"].map((x) => x)),
         url: json["url"],
+        fav: json["fav"],
         created: DateTime.parse(json["created"]),
       );
 
@@ -119,6 +127,7 @@ class Character {
         "image": image,
         "episode": List<dynamic>.from(episode!.map((x) => x)),
         "url": url,
+        "fav": fav,
         "created": created?.toIso8601String(),
       };
 

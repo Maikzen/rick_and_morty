@@ -58,16 +58,15 @@ class CardCharacter extends StatelessWidget {
                                 animation: homeBloc,
                                 builder: (context, _) {
                                   return FavouriteWidget(
-                                    selected: homeBloc.favourites
-                                        .contains(character.id),
+                                    selected: character.fav == true,
                                     color: Colors.white,
                                     onTap: () {
                                       homeBloc.favourite(character);
                                     },
                                   );
                                 })
-                            : const FavouriteWidget(
-                                selected: false,
+                            : FavouriteWidget(
+                                selected: character.fav == true,
                                 color: Colors.white,
                                 onTap: null,
                               ),
@@ -107,6 +106,8 @@ class CardCharacter extends StatelessWidget {
         Text(title),
         Text(
           subtitle,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
       ],
@@ -138,6 +139,8 @@ class CardCharacter extends StatelessWidget {
         ),
         Text(
           character.name!,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
       ],
