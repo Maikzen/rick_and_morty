@@ -68,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return AnimatedBuilder(
         animation: homeBloc,
         builder: (context, _) {
-          if (homeBloc.characters != null) {
+          if (homeBloc.characters != null && !homeBloc.showFavourites) {
             return SliverToBoxAdapter(
                 child: Padding(
               padding: const EdgeInsets.all(8),

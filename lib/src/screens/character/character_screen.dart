@@ -4,6 +4,7 @@ import 'package:rick_and_morty/src/models/DTO/character.dart';
 import 'package:rick_and_morty/src/providers/colors.dart';
 import 'package:rick_and_morty/src/providers/constants.dart';
 import 'package:rick_and_morty/src/screens/home/widgets/card_character.dart';
+import 'package:rick_and_morty/src/screens/home/widgets/favourite_widget.dart';
 import 'package:rick_and_morty/src/services/characters/characters_http_service.dart';
 import 'package:rick_and_morty/src/services/episodes/episodes_http_service.dart';
 
@@ -20,6 +21,9 @@ class _CharacterScreenState extends State<CharacterScreen> {
   late CharacterBloc characterBloc;
 
   final double _paddingH = 20;
+  final double _favWidth = 70;
+  final double _paddingFav = 10;
+  final double _factorImg = 0.2;
 
   @override
   void initState() {
@@ -78,8 +82,8 @@ class _CharacterScreenState extends State<CharacterScreen> {
                     child: Hero(
                       tag: 'img' + widget.character.id.toString(),
                       child: Container(
-                        height: size.height * 0.2,
-                        width: size.height * 0.2,
+                        height: size.height * _factorImg,
+                        width: size.height * _factorImg,
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.white, width: 5),
                           borderRadius:
@@ -97,6 +101,9 @@ class _CharacterScreenState extends State<CharacterScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
+                    SizedBox(
+                      height: _favWidth / 2 - _paddingFav,
+                    ),
                     _buildStatus(),
                     Text(
                       widget.character.name!,
@@ -116,7 +123,18 @@ class _CharacterScreenState extends State<CharacterScreen> {
                 ),
               ),
             ],
-          )
+          ),
+          Positioned(
+            top: size.height / 4 +
+                size.height * _factorImg / 2 -
+                _favWidth / 2 +
+                _paddingFav,
+            left: size.width / 2 - _favWidth / 2,
+            child: const FavouriteWidget(
+              selected: true,
+              color: Colors.white,
+            ),
+          ),
         ],
       ),
     );

@@ -89,13 +89,11 @@ class HomeBloc extends ChangeNotifier {
   void changeShowFavourites() {
     showFavourites = !showFavourites;
     if (showFavourites) {
-      characters!.clear();
-      characters!.addAll(allCharacters!.results!
+      characters = allCharacters!.results!
           .where((e) => favourites.contains(e.id))
-          .toList());
+          .toList();
     } else {
-      characters!.clear();
-      characters = allCharacters!.results;
+      characters = allCharacters!.results!;
     }
     notifyListeners();
   }

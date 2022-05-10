@@ -12,7 +12,7 @@ class CardCharacter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final HomeBloc homeBloc = HomeApp.of(context)!.homeBloc;
+    final HomeBloc? homeBloc = HomeApp.of(context)?.homeBloc;
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -53,18 +53,24 @@ class CardCharacter extends StatelessWidget {
                       ),
                       child: Align(
                         alignment: const Alignment(1, 0.9),
-                        child: AnimatedBuilder(
-                            animation: homeBloc,
-                            builder: (context, _) {
-                              return FavouriteWidget(
-                                selected:
-                                    homeBloc.favourites.contains(character.id),
+                        child: homeBloc != null
+                            ? AnimatedBuilder(
+                                animation: homeBloc,
+                                builder: (context, _) {
+                                  return FavouriteWidget(
+                                    selected: homeBloc.favourites
+                                        .contains(character.id),
+                                    color: Colors.white,
+                                    onTap: () {
+                                      homeBloc.favourite(character);
+                                    },
+                                  );
+                                })
+                            : const FavouriteWidget(
+                                selected: false,
                                 color: Colors.white,
-                                onTap: () {
-                                  homeBloc.favourite(character);
-                                },
-                              );
-                            }),
+                                onTap: null,
+                              ),
                       ),
                     ),
                   ),
